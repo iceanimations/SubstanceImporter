@@ -68,7 +68,7 @@ def make_raw(file_node):
 
 class _BaseImporter(object):
     texture_types = ['.*']
-    file_extensions = ['tif']
+    file_extensions = ['tif', 'png', 'exr', 'jpg', 'jpeg']
 
     @property
     def node_type(self):
@@ -273,5 +273,6 @@ if __name__ == "__main__":
             r'L:\LU\Prince_Choc_5\assets\environment\mustachio_lair_int'
             r'\sources\substance\side\textures'
     )
+    path = r'D:\talha.ahmed\Documents\maya\projects\default\scenes\texture'
     importer = SubstanceImporter()
-    importer.apply_all_textures(substance_texture_path)
+    importer.apply_all_textures(path)
