@@ -157,7 +157,7 @@ class _BaseImporter(object):
         return obj
 
     def apply_all_textures(self, path, sl=False, obj=None, tex_types=None,
-                           delete_existing=False):
+                           delete_existing=True):
         materials = self.get_materials(sl=sl)
         for mat in materials:
             obj = self.apply_textures_to_material(
@@ -170,7 +170,8 @@ class _BaseRedshiftImporter(_BaseImporter):
     texture_types = ['BaseColor', 'Metallic', 'Normal', 'Roughness']
 
     def apply_texture(self, material, texture_path,
-                      delete_existing=False):
+                      delete_existing=True):
+        print 'apply_texture', material, texture_path
         texture_type = self.get_texture_type(texture_path, material)
         function = self.application_functions.get(texture_type, None)
         if function is not None:
@@ -180,7 +181,8 @@ class _BaseRedshiftImporter(_BaseImporter):
                                 delete_existing=True):
         file_node = make_texture_node(texture_path)
         if delete_existing:
-            pc.delete(material.diffuse_color.inputs())
+            for inp in material.diffuse_color.inputs():
+                pc.delete(pc.listHistory(inp))
         file_node.outColor >> material.diffuse_color
         return file_node
 
@@ -190,7 +192,8 @@ class _BaseRedshiftImporter(_BaseImporter):
         file_node = make_texture_node(texture_path)
         make_raw(file_node)
         if delete_existing:
-            pc.delete(material.refl_metalness.inputs())
+            for inp in material.refl_metalness.inputs():
+                pc.delete(pc.listHistory(inp))
         file_node.outAlpha >> material.refl_metalness
         file_node.alphaIsLuminance.set(True)
         return file_node
@@ -202,7 +205,8 @@ class _BaseRedshiftImporter(_BaseImporter):
         nmap.tex0.set(texture_path)
         nmap.flipY.set(1)
         if delete_existing:
-            pc.delete(material.bump_input.inputs())
+            for inp in material.bump_input.inputs():
+                pc.delete(pc.listHistory(inp))
         nmap.outDisplacementVector >> material.bump_input
         return nmap
 
@@ -212,7 +216,8 @@ class _BaseRedshiftImporter(_BaseImporter):
         file_node = make_texture_node(texture_path)
         make_raw(file_node)
         if delete_existing:
-            pc.delete(material.refl_roughness.inputs())
+            for inp in material.refl_roughness.inputs():
+                pc.delete(pc.listHistory(inp))
         file_node.outAlpha >> material.refl_roughness
         file_node.alphaIsLuminance.set(True)
         return file_node
