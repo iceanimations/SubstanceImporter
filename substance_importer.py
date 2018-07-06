@@ -175,6 +175,7 @@ class _BaseRedshiftImporter(_BaseImporter):
         texture_type = self.get_texture_type(texture_path, material)
         function = self.application_functions.get(texture_type, None)
         if function is not None:
+            material.refl_brdf.set(1)
             return function(self, material, texture_path, delete_existing)
 
     def apply_basecolor_texture(self, material, texture_path,
@@ -189,6 +190,7 @@ class _BaseRedshiftImporter(_BaseImporter):
     def apply_metallic_map(self, material, texture_path,
                            delete_existing=True):
         # make raw and disable color management
+        material.refl_fresnel_mode.set(2)
         file_node = make_texture_node(texture_path)
         make_raw(file_node)
         if delete_existing:
