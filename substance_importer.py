@@ -91,7 +91,7 @@ class _BaseImporter(object):
                 for filename in os.listdir(path):
                     match = re.match(rexp, filename, re.I)
                     if match:
-                        texs.append(match.group())
+                        texs.append(os.path.join(path, match.group()))
 
         return texs
 
