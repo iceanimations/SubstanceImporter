@@ -6,7 +6,6 @@
 # possible values of <mapname> = BaseColor, Metallic, Normal, Roughness  --
 # NOT "Height" at the moment
 
-
 # possible types of materials = RedshiftMaterial
 # Get From Scene
 # Get From Selection
@@ -86,8 +85,9 @@ class _BaseImporter(object):
 
         for tex_type in self.texture_types:
             for ext in self.file_extensions:
-                rexp = '%s_%s_%s\\.%s' % (
-                        obj if obj is not None else '.*', name, tex_type, ext)
+                rexp = '%s_?%s_%s\\.%s' % (
+                        obj if obj is not None else '[^_]*', name, tex_type,
+                        ext)
                 for filename in os.listdir(path):
                     match = re.match(rexp, filename, re.I)
                     if match:
@@ -100,7 +100,7 @@ class _BaseImporter(object):
         dirname, basename = os.path.split(path)
         for tex_type in self.texture_types:
             for ext in self.file_extensions:
-                rexp = '(.*)_%s_%s\\.%s' % (name, tex_type, ext)
+                rexp = '([^_]*)_?%s_%s\\.%s' % (name, tex_type, ext)
                 match = re.match(rexp, basename, re.I)
                 if match:
                     return match.group(1)
@@ -109,7 +109,7 @@ class _BaseImporter(object):
     def get_texture_type(self, path, node):
         name = node_name(node)
         dirname, basename = os.path.split(path)
-        rexp = '.*_%s_(.*)\\..*' % name
+        rexp = '[^_]*_?%s_(.*)\\..*' % name
         match = re.match(rexp, basename)
         if match:
             return match.group(1)
@@ -276,5 +276,6 @@ if __name__ == "__main__":
             r'\sources\substance\side\textures'
     )
     path = r'D:\talha.ahmed\Documents\maya\projects\default\scenes\texture'
+    path = r'L:\LU\Prince_Choc_5\assets\environment\mustachio_factory_int\sources\substance\Floor_ResearchArea\texture'
     importer = SubstanceImporter()
     importer.apply_all_textures(path)
